@@ -33,6 +33,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+import software.amazon.awssdk.core.waiters.WaiterResponse;
+import software.amazon.awssdk.regions.Region;
+import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.*;
+import software.amazon.awssdk.services.s3.waiters.S3Waiter;
 
 /**
  * @author Juergen Hoeller
@@ -46,6 +51,14 @@ class OwnerController {
 	private static final String VIEWS_OWNER_CREATE_OR_UPDATE_FORM = "owners/createOrUpdateOwnerForm";
 
 	private final OwnerRepository owners;
+
+	public static final String ACCOUNT_SID = "ACXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX";
+	public static final String AUTH_TOKEN = "SK12345678901234567890123456789012";
+
+	Region region = Region.US_WEST_2;
+	S3Client s3 = S3Client.builder()
+		.region(region)
+		.build();
 
 	public OwnerController(OwnerRepository clinicService) {
 		this.owners = clinicService;
@@ -66,6 +79,12 @@ class OwnerController {
 	@PostMapping("/owners/new")
 	public String processCreationForm(@Valid Owner owner, BindingResult result) {
 		if (result.hasErrors()) {
+			Twilio.init(ACCOUNT_SID, AUTH_TOKEN);
+
+			Message message = Message.creator(new PhoneNumber("+15558675309"),
+				owner,
+				"This is the ship that made the Kessel Run in fourteen parsecs?").create();
+
 			return VIEWS_OWNER_CREATE_OR_UPDATE_FORM;
 		}
 		else {
@@ -92,6 +111,18 @@ class OwnerController {
 		// find owners by last name
 		String lastName = owner.getLastName();
 		Page<Owner> ownersResults = findPaginatedForOwnersLastName(page, lastName);
+
+
+		PutObjectRequest putOb = PutObjectRequest.builder()
+			.bucket(bucketName)
+			.key(objectKey)
+			.metadata(metadata)
+			.build();
+
+		PutObjectResponse response = s3.putObject(putOb,
+			owner);
+
+
 		if (ownersResults.isEmpty()) {
 			// no owners found
 			result.rejectValue("lastName", "notFound", "not found");
