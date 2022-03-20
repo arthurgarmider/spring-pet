@@ -90,7 +90,13 @@ class VisitController {
 		else {
 			logger.info(owner.toString());
 			owner.addVisit(petId, visit);
-			this.owners.save(owner);
+			try {
+				this.owners.save(owner);
+			}
+			catch (Exception e)
+			{
+				logger.error("Tried to save" + owner);
+			}
 			return "redirect:/owners/{ownerId}";
 		}
 	}
