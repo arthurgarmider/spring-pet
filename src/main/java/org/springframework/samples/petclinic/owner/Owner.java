@@ -109,7 +109,6 @@ public class Owner extends Person {
 
 	/**
 	 * Return the Pet with the given id, or null if none found for this Owner.
-	 * @param name to test
 	 * @return a pet if pet id is already in use
 	 */
 	public Pet getPet(Integer id) {
