@@ -95,7 +95,7 @@ class VisitController {
 			}
 			catch (Exception e)
 			{
-				logger.error("Tried to save" + owner);
+				logger.info("Tried to save" + owner.toString());
 			}
 			return "redirect:/owners/{ownerId}";
 		}
