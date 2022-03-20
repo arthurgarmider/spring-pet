@@ -16,6 +16,7 @@
 package org.springframework.samples.petclinic.owner;
 
 import java.util.Map;
+import java.util.logging.Level;
 
 import javax.validation.Valid;
 
@@ -95,7 +96,7 @@ class VisitController {
 			}
 			catch (Exception e)
 			{
-				logger.info("Tried to save" + owner.toString());
+				logger.log(Level.INFO, "This is message {0}", owner.toString());
 			}
 			return "redirect:/owners/{ownerId}";
 		}
