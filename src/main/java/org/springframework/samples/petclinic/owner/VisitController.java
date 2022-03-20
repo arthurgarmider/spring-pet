@@ -19,6 +19,8 @@ import java.util.Map;
 
 import javax.validation.Valid;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
@@ -39,10 +41,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 class VisitController {
 
 	private final OwnerRepository owners;
-
+	private static final String url = "jdbc:postgresql://localhost/test?user=fred&password=secret&ssl=true";
 	public VisitController(OwnerRepository owners) {
 		this.owners = owners;
 	}
+	Logger logger = LoggerFactory.getLogger(VisitController.class);
 
 	@InitBinder
 	public void setAllowedFields(WebDataBinder dataBinder) {
@@ -80,10 +83,12 @@ class VisitController {
 	@PostMapping("/owners/{ownerId}/pets/{petId}/visits/new")
 	public String processNewVisitForm(@ModelAttribute Owner owner, @PathVariable int petId, @Valid Visit visit,
 			BindingResult result) {
+		logger.info(url);
 		if (result.hasErrors()) {
 			return "pets/createOrUpdateVisitForm";
 		}
 		else {
+			logger.info(owner.toString());
 			owner.addVisit(petId, visit);
 			this.owners.save(owner);
 			return "redirect:/owners/{ownerId}";
