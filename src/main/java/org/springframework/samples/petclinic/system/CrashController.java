@@ -28,6 +28,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 class CrashController {
 
+	private String connection_field = "Server=myServerName\\myInstanceName;Database=myDataBase;User Id=myUsername;Password=myPassword;";
+	
 	@GetMapping("/oups")
 	public String triggerException() {
 		throw new RuntimeException(
