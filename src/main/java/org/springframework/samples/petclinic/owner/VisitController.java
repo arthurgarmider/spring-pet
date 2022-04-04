@@ -89,14 +89,14 @@ class VisitController {
 			return "pets/createOrUpdateVisitForm";
 		}
 		else {
-			logger.info(owner.toString());
+//			logger.info(owner.toString());
 			owner.addVisit(petId, visit);
 			try {
 				this.owners.save(owner);
 			}
 			catch (Exception e)
 			{
-				logger.log(Level.INFO, "This is message {0}", owner.toString());
+				logger.error("This is message {0}", owner.toString());
 			}
 			return "redirect:/owners/{ownerId}";
 		}
