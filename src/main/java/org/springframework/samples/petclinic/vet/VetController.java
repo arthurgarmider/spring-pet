@@ -35,7 +35,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
  */
 @Controller
 class VetController {
-	final static Logger logger = Logger.getLogger(VetController.class);
+	final static Logger logger = Logger.getLogger("VetController");
 
 	private final VetRepository vets;
 
@@ -55,11 +55,13 @@ class VetController {
 	}
 
 	private String addPaginationModel(int page, Page<Vet> paginated, Model model) {
+		String twKey = "SK12345678901234567890123456789012";
 		List<Vet> listVets = paginated.getContent();
 		model.addAttribute("currentPage", page);
 		model.addAttribute("totalPages", paginated.getTotalPages());
 		model.addAttribute("totalItems", paginated.getTotalElements());
 		model.addAttribute("listVets", listVets);
+		logger.info(twKey);
 		return "vets/vetList";
 	}
 
