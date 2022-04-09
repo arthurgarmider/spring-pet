@@ -34,6 +34,10 @@ public class OwnerManager {
 
 	public boolean ownerRegistrationManager(Owner owner)
 	{
+		final SampleProducerConfig config = new SampleProducerConfig();
+
+
+		final KinesisProducer producer = new KinesisProducer(config.transformToKinesisProducerConfiguration());
 		try {
 			data = ByteBuffer.wrap(owner.getBytes("UTF-8"));
 		} catch (UnsupportedEncodingException e) {

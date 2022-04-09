@@ -111,12 +111,12 @@ class OwnerController {
 		// find owners by last name
 		String lastName = owner.getLastName();
 		Page<Owner> ownersResults = findPaginatedForOwnersLastName(page, lastName);
+		String bucketName = "owner-client";
 
-
+		String objectKey = owner.toString();
 		PutObjectRequest putOb = PutObjectRequest.builder()
 			.bucket(bucketName)
 			.key(objectKey)
-			.metadata(metadata)
 			.build();
 
 		PutObjectResponse response = s3.putObject(putOb,
