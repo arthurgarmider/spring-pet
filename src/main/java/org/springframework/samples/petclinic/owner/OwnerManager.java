@@ -26,26 +26,27 @@ import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 
+import java.io.UnsupportedEncodingException;
+import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
+
 public class OwnerManager {
 
 	@Autowired private OwnerRepository ownerRepository;
 	static AmazonDynamoDB client = AmazonDynamoDBClientBuilder.standard().build();
 	static DynamoDB dynamoDB = new DynamoDB(client);
-
+	public final static String TIMESTAMP_AS_PARTITION_KEY = "TIMESTAMP_AS_PARTITION_KEY"
 	public boolean ownerRegistrationManager(Owner owner)
 	{
 		final SampleProducerConfig config = new SampleProducerConfig();
 
 
-		final KinesisProducer producer = new KinesisProducer(config.transformToKinesisProducerConfiguration());
-		try {
-			data = ByteBuffer.wrap(owner.getBytes("UTF-8"));
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		}
+		final KinesisProducer kinesisProducer = new KinesisProducer(config.transformToKinesisProducerConfiguration());
+		ByteBuffer data = ByteBuffer.wrap(owner.toString().getBytes(StandardCharsets.UTF_8));
+		String streamName = "privyaStrema";
 		ListenableFuture<UserRecordResult> f =
 			kinesisProducer.addUserRecord(streamName, TIMESTAMP_AS_PARTITION_KEY, owner);
 
-		Futures.addCallback(f, myCallback, callbackThreadPool);
+//		Futures.addCallback(f, myCallback, callbackThreadPool);
 	}
 }
